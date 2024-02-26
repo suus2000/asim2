@@ -2,10 +2,10 @@
 
 Created by: EPA133a Group xx
 
-|    Name     | Student Number |
-| :---------: | :------------- |
-| Mary White  | 1234567        |
-| David Brown | 7654321        |
+|      Name       | Student Number |
+|:---------------:| :------------- |
+| Suus Wink | 1234567        |
+|   David Brown   | 7654321        |
 
 ## Introduction
 
