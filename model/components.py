@@ -1,6 +1,6 @@
 from mesa import Agent
 from enum import Enum
-
+import random
 
 # ---------------------------------------------------------------
 class Infra(Agent):
@@ -53,15 +53,23 @@ class Bridge(Infra):
     def __init__(self, unique_id, model, length=0,
                  name='Unknown', road_name='Unknown', condition='Unknown'):
         super().__init__(unique_id, model, length, name, road_name)
-
         self.condition = condition
 
         # TODO
-        self.delay_time = self.random.randrange(0, 10)
+        self.delay_time = 0 #self.random.randrange(0, 10)
+
         # print(self.delay_time)
 
     # TODO
     def get_delay_time(self):
+        if self.length > 200:
+            self.delay_time = random.triangular(60, 240, 120)
+        elif self.length > 50 and self.length <= 200:
+            self.delay_time = random.uniform(45, 90)
+        elif self.length > 10 and self.length <= 50:
+            self.delay_time = random.uniform(15, 60)
+        else:
+            self.delay_time = random.uniform(10, 20)
         return self.delay_time
 
 
@@ -192,7 +200,7 @@ class Vehicle(Agent):
     """
 
     # 50 km/h translated into meter per min
-    speed = 50 * 1000 / 60
+    speed = 48 * 1000 / 60
     # One tick represents 1 minute
     step_time = 1
 
@@ -213,8 +221,14 @@ class Vehicle(Agent):
         self.state = Vehicle.State.DRIVE
         self.location_index = 0
         self.waiting_time = 0
+        self.waiting_time_agent = 0
+
         self.waited_at = None
         self.removed_at_step = None
+
+        # Travel time
+        self.travel_time = 0
+        #self.reached_end_flag = False
 
     def __str__(self):
         return "Vehicle" + str(self.unique_id) + \
@@ -232,11 +246,16 @@ class Vehicle(Agent):
         """
         Vehicle waits or drives at each step
         """
+        # Report travel time
+        # print('Travel_time increases')
+        self.travel_time += 1
+
         if self.state == Vehicle.State.WAIT:
             self.waiting_time = max(self.waiting_time - 1, 0)
             if self.waiting_time == 0:
                 self.waited_at = self.location
                 self.state = Vehicle.State.DRIVE
+
 
         if self.state == Vehicle.State.DRIVE:
             self.drive()
@@ -244,7 +263,7 @@ class Vehicle(Agent):
         """
         To print the vehicle trajectory at each step
         """
-        print(self)
+        #print(self)
 
     def drive(self):
 
@@ -274,9 +293,17 @@ class Vehicle(Agent):
             self.arrive_at_next(next_infra, 0)
             self.removed_at_step = self.model.schedule.steps
             self.location.remove(self)
+            # self.reached_end_flag = True
+
+            # Report data
+            self.model.total_travel_time.append(self.travel_time)
+            self.model.total_waiting_time.append(self.waiting_time_agent)
+            self.model.trucks_sink_counter += 1
+
             return
         elif isinstance(next_infra, Bridge):
             self.waiting_time = next_infra.get_delay_time()
+            self.waiting_time_agent += self.waiting_time
             if self.waiting_time > 0:
                 # arrive at the bridge and wait
                 self.arrive_at_next(next_infra, 0)

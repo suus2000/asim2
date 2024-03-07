@@ -1,8 +1,10 @@
+import random
 
 from mesa import Model
 from mesa.time import BaseScheduler
 from mesa.space import ContinuousSpace
-from components import Source, Sink, SourceSink, Bridge, Link
+from mesa.datacollection import DataCollector
+from components import Source, Sink, SourceSink, Bridge, Link, Vehicle
 import pandas as pd
 from collections import defaultdict
 
@@ -64,8 +66,31 @@ class BangladeshModel(Model):
         self.space = None
         self.sources = []
         self.sinks = []
+        self.bridges = []
+        random.seed(seed)
+
+        # Own data collector
+        self.total_travel_time = []
+        self.trucks_sink_counter = 0
+        self.total_waiting_time = []
+
+        self.total_delay_time = []
+        self.amount_of_bridges = 0
+        self.delay_per_bridge = {}
 
         self.generate_model()
+        test_dict = {'A': 0, 'B': 0, 'C': 0, 'D': 0}
+        self.break_bridges(test_dict)
+
+        # # Data collector
+        # bridge_metrics = {"delay_time": "delay_time"}
+        # truck_metrics = {"travel_time": lambda agent: agent.travel_time
+        #                 if type(agent) is Vehicle and agent.reached_end_flag == True
+        #                     else None}
+        #
+        # self.datacollector_bridge = DataCollector(agent_reporters=bridge_metrics)
+        # self.datacollector_trucks = DataCollector(agent_reporters=truck_metrics)
+
 
     def generate_model(self):
         """
@@ -74,7 +99,7 @@ class BangladeshModel(Model):
         Warning: the labels are the same as the csv column labels
         """
 
-        df = pd.read_csv('../data/N1_data.csv')
+        df = pd.read_csv('../data/N1_data_v2.csv')
 
         # a list of names of roads to be generated
         roads = ['N1']
@@ -137,7 +162,8 @@ class BangladeshModel(Model):
                     self.sources.append(agent.unique_id)
                     self.sinks.append(agent.unique_id)
                 elif model_type == 'bridge':
-                    agent = Bridge(row['id'], self, row['length'], row['name'], row['road'])
+                    agent = Bridge(row['id'], self, row['length'], row['name'], row['road'], row['condition'])
+                    self.bridges.append(agent)
                 elif model_type == 'link':
                     agent = Link(row['id'], self, row['length'], row['name'], row['road'])
 
@@ -147,6 +173,7 @@ class BangladeshModel(Model):
                     x = row['lon']
                     self.space.place_agent(agent, (x, y))
                     agent.pos = (x, y)
+
 
     def get_random_route(self, source):
         """
@@ -163,7 +190,36 @@ class BangladeshModel(Model):
         """
         Advance the simulation by one step.
         """
+        # self.datacollector_bridge.collect(self)
+        # self.datacollector_trucks.collect(self)
         self.schedule.step()
+
+    def break_bridges(self, scenario_dict):
+        for key in scenario_dict:
+            print(key)
+            bridges_condition_list = []
+            for bridge in self.bridges:
+                # print(bridge)
+                # print(bridge.condition)
+                if bridge.condition == key:
+                    bridges_condition_list.append(bridge)
+            # for bridge in bridges_condition_list:
+            #     print(bridge.condition)
+
+            amount_bridges = len(bridges_condition_list)
+            amount_bridges_to_break = int((scenario_dict[key] / 100) * amount_bridges)
+            for i in range(amount_bridges_to_break):
+                bridge_to_break = random.choice(bridges_condition_list)
+                print(bridge_to_break)
+                bridge_to_break.delay_time = bridge_to_break.get_delay_time()
+                print(bridge_to_break.delay_time)
+                bridges_condition_list.remove(bridge_to_break)
+
+    def get_data(self):
+        data_dict = {}
+        data_dict['avg_travel_time'] = sum(self.total_travel_time) / self.trucks_sink_counter
+        data_dict['avg_waiting_time'] = sum(self.total_waiting_time) / self.trucks_sink_counter
+        return data_dict
 
 
 # EOF -----------------------------------------------------------
