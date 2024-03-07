@@ -74,9 +74,7 @@ class BangladeshModel(Model):
         self.trucks_sink_counter = 0
         self.total_waiting_time = []
 
-        self.total_delay_time = []
         self.amount_of_bridges = 0
-        self.delay_per_bridge = {}
 
         self.generate_model()
         self.break_bridges(scen_dict)
@@ -195,7 +193,7 @@ class BangladeshModel(Model):
 
     def break_bridges(self, scenario_dict):
         for key in scenario_dict:
-            print(key)
+            # print(key)
             bridges_condition_list = []
             for bridge in self.bridges:
                 # print(bridge)
@@ -210,15 +208,17 @@ class BangladeshModel(Model):
             for i in range(amount_bridges_to_break):
                 bridge_to_break = random.choice(bridges_condition_list)
                 #print(bridge_to_break)
-                bridge_to_break.delay_time = bridge_to_break.get_delay_time()
+                bridge_to_break.broken = True
                 #print(bridge_to_break.delay_time)
                 bridges_condition_list.remove(bridge_to_break)
 
-    def get_data(self):
+    def get_data(self, seed):
         data_dict = {}
-        data_dict['avg_travel_time'] = sum(self.total_travel_time) / self.trucks_sink_counter
-        data_dict['avg_waiting_time'] = sum(self.total_waiting_time) / self.trucks_sink_counter
-        return data_dict
+        seed = str(seed)
+        data_dict['Average Travel Time'] = sum(self.total_travel_time) / self.trucks_sink_counter
+        data_dict['Average Waiting Time'] = sum(self.total_waiting_time) / self.trucks_sink_counter
+        df = pd.DataFrame.from_dict(data_dict, orient='index', columns = [seed])
+        return df
 
 
 # EOF -----------------------------------------------------------

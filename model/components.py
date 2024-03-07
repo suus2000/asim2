@@ -51,26 +51,15 @@ class Bridge(Infra):
     """
 
     def __init__(self, unique_id, model, length=0,
-                 name='Unknown', road_name='Unknown', condition='Unknown'):
+                 name='Unknown', road_name='Unknown', condition='Unknown', broken = False):
         super().__init__(unique_id, model, length, name, road_name)
         self.condition = condition
+        self.broken = False
 
         # TODO
         self.delay_time = 0 #self.random.randrange(0, 10)
 
         # print(self.delay_time)
-
-    # TODO
-    def get_delay_time(self):
-        if self.length > 200:
-            self.delay_time = random.triangular(60, 240, 120)
-        elif self.length > 50 and self.length <= 200:
-            self.delay_time = random.uniform(45, 90)
-        elif self.length > 10 and self.length <= 50:
-            self.delay_time = random.uniform(15, 60)
-        else:
-            self.delay_time = random.uniform(10, 20)
-        return self.delay_time
 
 
 # ---------------------------------------------------------------
@@ -95,7 +84,7 @@ class Sink(Infra):
     def remove(self, vehicle):
         self.model.schedule.remove(vehicle)
         self.vehicle_removed_toggle = not self.vehicle_removed_toggle
-        print(str(self) + ' REMOVE ' + str(vehicle))
+        # print(str(self) + ' REMOVE ' + str(vehicle))
 
 
 # ---------------------------------------------------------------
@@ -142,7 +131,7 @@ class Source(Infra):
                 Source.truck_counter += 1
                 self.vehicle_count += 1
                 self.vehicle_generated_flag = True
-                print(str(self) + " GENERATE " + str(agent))
+                # print(str(self) + " GENERATE " + str(agent))
         except Exception as e:
             print("Oops!", e.__class__, "occurred.")
 
@@ -302,7 +291,7 @@ class Vehicle(Agent):
 
             return
         elif isinstance(next_infra, Bridge):
-            self.waiting_time = next_infra.delay_time
+            self.waiting_time = self.get_delay_time(next_infra)
             self.waiting_time_agent += self.waiting_time
             if self.waiting_time > 0:
                 # arrive at the bridge and wait
@@ -327,6 +316,21 @@ class Vehicle(Agent):
         self.location_offset = location_offset
         self.location.vehicle_count += 1
 
+    def get_delay_time(self, bridge):
+        if bridge.broken == True:
+            if bridge.length > 200:
+                self.delay_time = random.triangular(60, 240, 120)
+            elif bridge.length > 50 and bridge.length <= 200:
+                self.delay_time = random.uniform(45, 90)
+            elif bridge.length > 10 and bridge.length <= 50:
+                self.delay_time = random.uniform(15, 60)
+            else:
+                self.delay_time = random.uniform(10, 20)
+
+        else:
+            self.delay_time = 0
+
+        return self.delay_time
 # EOF -----------------------------------------------------------
 
 
