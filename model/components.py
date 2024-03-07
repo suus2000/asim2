@@ -302,7 +302,7 @@ class Vehicle(Agent):
 
             return
         elif isinstance(next_infra, Bridge):
-            self.waiting_time = next_infra.get_delay_time()
+            self.waiting_time = next_infra.delay_time
             self.waiting_time_agent += self.waiting_time
             if self.waiting_time > 0:
                 # arrive at the bridge and wait

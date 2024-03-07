@@ -58,7 +58,7 @@ class BangladeshModel(Model):
 
     step_time = 1
 
-    def __init__(self, seed=None, x_max=500, y_max=500, x_min=0, y_min=0):
+    def __init__(self, seed=None, x_max=500, y_max=500, x_min=0, y_min=0, scen_dict = {'A': 0, 'B': 0, 'C': 0, 'D': 0}):
 
         self.schedule = BaseScheduler(self)
         self.running = True
@@ -79,8 +79,7 @@ class BangladeshModel(Model):
         self.delay_per_bridge = {}
 
         self.generate_model()
-        test_dict = {'A': 0, 'B': 0, 'C': 0, 'D': 0}
-        self.break_bridges(test_dict)
+        self.break_bridges(scen_dict)
 
         # # Data collector
         # bridge_metrics = {"delay_time": "delay_time"}
@@ -210,9 +209,9 @@ class BangladeshModel(Model):
             amount_bridges_to_break = int((scenario_dict[key] / 100) * amount_bridges)
             for i in range(amount_bridges_to_break):
                 bridge_to_break = random.choice(bridges_condition_list)
-                print(bridge_to_break)
+                #print(bridge_to_break)
                 bridge_to_break.delay_time = bridge_to_break.get_delay_time()
-                print(bridge_to_break.delay_time)
+                #print(bridge_to_break.delay_time)
                 bridges_condition_list.remove(bridge_to_break)
 
     def get_data(self):
