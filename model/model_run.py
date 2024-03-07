@@ -18,7 +18,7 @@ output_directory = os.path.join(parent_directory, 'output')
 scen_list = [{"A":0, "B":0, "C":0, "D":0}, {"A":0, "B":0, "C":0, "D":5},{"A":0, "B":0, "C":0, "D":10},{"A":0, "B":0, "C":5, "D":10},
              {"A":0, "B":0, "C":10, "D":20},{"A":0, "B":5, "C":10, "D":20},{"A":0, "B":10, "C":20, "D":40},{"A":5, "B":10, "C":20, "D":40},
              {"A":10, "B":20, "C":40, "D":80}]
-seed_list = [9, 10, 20, 30, 40, 50, 60, 70, 80, 90]
+seed_list = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 def run_model_batch(scen_list, seed_list):
     averages_per_scenario = []

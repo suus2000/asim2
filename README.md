@@ -1,12 +1,14 @@
 # Example README File
 
-Created by: EPA133a Group xx
+Created by: EPA133a Group 16
 
 |   Name    | Student Number |
 |:---------:| :------------- |
 | Suus Wink | 1234567        |
-|     Merijn Beemster        |
-|           |                |
+|Merijn Beemster | ???        |
+|Tarik Bousair| 5331900      |
+|Juliette van Alst| 5402409   |
+| Vera | |
 
 ## Introduction
 
@@ -17,9 +19,3 @@ If you are looking for information about the Demo model of Assignment 2, navigat
 ## How to Use
 
 Include whatever you think is necessary for someone to understand your work. The README file is usually the first file someone will see and open. It doesn't need to explain what might be obvious, but it should point out the most important things for someone looking at your work. For example, how to launch your program, what are the main files, where to find them, etc.
-
-### Format
-
-Most README files for data or software projects are now written in Markdown format, like this document. There are some different flavours, but they are easy to write. See here for more information https://www.markdownguide.org/basic-syntax
-
-Most IDEs can render Markdown files directly.
