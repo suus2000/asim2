@@ -3,7 +3,6 @@ import random
 from mesa import Model
 from mesa.time import BaseScheduler
 from mesa.space import ContinuousSpace
-from mesa.datacollection import DataCollector
 from components import Source, Sink, SourceSink, Bridge, Link, Vehicle
 import pandas as pd
 from collections import defaultdict
@@ -54,6 +53,18 @@ class BangladeshModel(Model):
     sinks: list
         all sinks in the network
 
+    NEWLY ADDED:
+    bridges: list
+        all bridges in the network
+
+    total_travel_time: list
+        the travel time of each agent that has reached the end of the road
+
+    truck_sink_counter: int
+        the number of trucks that reach the end of the road
+
+    total_waiting_time:
+        the total waiting time of each agent that has reached the end of the road
     """
 
     step_time = 1
@@ -67,9 +78,7 @@ class BangladeshModel(Model):
         self.sources = []
         self.sinks = []
         self.bridges = []
-        random.seed(seed)
 
-        # Own data collector
         self.total_travel_time = []
         self.trucks_sink_counter = 0
         self.total_waiting_time = []
@@ -77,16 +86,14 @@ class BangladeshModel(Model):
         self.amount_of_bridges = 0
 
         self.generate_model()
+        # The method break_bridges is called to determine which
+        # bridges should break with the scenario dictionary as input
         self.break_bridges(scen_dict)
 
-        # # Data collector
-        # bridge_metrics = {"delay_time": "delay_time"}
-        # truck_metrics = {"travel_time": lambda agent: agent.travel_time
-        #                 if type(agent) is Vehicle and agent.reached_end_flag == True
-        #                     else None}
-        #
-        # self.datacollector_bridge = DataCollector(agent_reporters=bridge_metrics)
-        # self.datacollector_trucks = DataCollector(agent_reporters=truck_metrics)
+        # Sets the seed of the model at initialization
+        random.seed(seed)
+
+
 
 
     def generate_model(self):
@@ -96,6 +103,7 @@ class BangladeshModel(Model):
         Warning: the labels are the same as the csv column labels
         """
 
+        # Cleaned data of N1 is used to run the model
         df = pd.read_csv('../data/N1_data_v2.csv')
 
         # a list of names of roads to be generated
@@ -159,6 +167,7 @@ class BangladeshModel(Model):
                     self.sources.append(agent.unique_id)
                     self.sinks.append(agent.unique_id)
                 elif model_type == 'bridge':
+                    # To check whether a bridge should break, its condition is needed
                     agent = Bridge(row['id'], self, row['length'], row['name'], row['road'], row['condition'])
                     self.bridges.append(agent)
                 elif model_type == 'link':
@@ -187,37 +196,39 @@ class BangladeshModel(Model):
         """
         Advance the simulation by one step.
         """
-        # self.datacollector_bridge.collect(self)
-        # self.datacollector_trucks.collect(self)
         self.schedule.step()
 
     def break_bridges(self, scenario_dict):
+        """
+        Determines which bridge should break and flags them
+        """
+        # Checks what bridges have a certain key (A,B,C,D) and adds them to a list
         for key in scenario_dict:
-            # print(key)
             bridges_condition_list = []
             for bridge in self.bridges:
-                # print(bridge)
-                # print(bridge.condition)
                 if bridge.condition == key:
                     bridges_condition_list.append(bridge)
-            # for bridge in bridges_condition_list:
-            #     print(bridge.condition)
 
+            # Determines what amount of bridges of a certain condition should be broken with the scenario dictionary,
+            # then makes random choices and flags them
             amount_bridges = len(bridges_condition_list)
             amount_bridges_to_break = int((scenario_dict[key] / 100) * amount_bridges)
             for i in range(amount_bridges_to_break):
                 bridge_to_break = random.choice(bridges_condition_list)
-                #print(bridge_to_break)
                 bridge_to_break.broken = True
-                #print(bridge_to_break.delay_time)
                 bridges_condition_list.remove(bridge_to_break)
 
     def get_data(self, seed):
+        """
+        Own data collector, more efficient as it generates data at end of model
+        """
         data_dict = {}
+        # Seed is being used as column name
         seed = str(seed)
+        # Average travel time and average waiting time are being reported per run in one df per scenario
         data_dict['Average Travel Time'] = sum(self.total_travel_time) / self.trucks_sink_counter
         data_dict['Average Waiting Time'] = sum(self.total_waiting_time) / self.trucks_sink_counter
-        df = pd.DataFrame.from_dict(data_dict, orient='index', columns = [seed])
+        df = pd.DataFrame.from_dict(data_dict, orient='index', columns=[seed])
         return df
 
 
