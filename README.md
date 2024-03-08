@@ -1,4 +1,4 @@
-# Example README File
+# README File
 
 Created by: EPA133a Group 16
 
@@ -10,12 +10,8 @@ Created by: EPA133a Group 16
 | Juliette van Alst | 5402409        |
 |  Vera Vermeulen   | 5127661        |
 
-## Introduction
+## How to Run
+This is a model that simulates traffic delays caused by broken bridges in Bangladesh. For this demo, only a part of the major road N1 is included. The files model.py, model_run.py, model_viz.py and components.py are included. model.py and components.py include the code of the model, while model_viz.py is the visualization module, which is incompatible with the current version of the model. To run the model, the file model_run.py should be run (in an IDE). The variables scen_dict and seed_list can be changed to include different scenarios or different seeds. The model will run for each seed for each scenario and the output will be saved as CSVs in the output folder. The model uses the dataset N1_data_v2.csv, which contains the data of the links and bridges on the relevant part of the N1. The data cleaning process is described in the included pdf. 
 
-Every project should have a README file to help a first-time user understand what it is about and how they might be able to use it. This file is where you (as a group) shall provide the information needed by the TAs to evaluate and grade your work.
-
-If you are looking for information about the Demo model of Assignment 2, navigate to the [model/README.md](model/README.md) in the [model](model) directory. Have **fun** modeling in Python!
-
-## How to Use
-
-Include whatever you think is necessary for someone to understand your work. The README file is usually the first file someone will see and open. It doesn't need to explain what might be obvious, but it should point out the most important things for someone looking at your work. For example, how to launch your program, what are the main files, where to find them, etc.
+## Output
+In the output folder, the model outputs a CSV per scenario that contains the average travel time and waiting time for each model run (so for each seed). Next to that, all_scenarios.csv gives the average travel and waiting time for each scenario (so the average across the runs). 
