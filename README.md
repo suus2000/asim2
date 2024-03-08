@@ -2,13 +2,13 @@
 
 Created by: EPA133a Group 16
 
-|   Name    | Student Number |
-|:---------:| :------------- |
-| Suus Wink | 1234567        |
-|Merijn Beemster | ???        |
-|Tarik Bousair| 5331900      |
-|Juliette van Alst| 5402409   |
-| Vera | |
+|       Name        | Student Number |
+|:-----------------:|:---------------|
+|   Suzanne Wink    | 5130697        |
+|  Merijn Beemster  | 5380421        |
+|   Tarik Bousair   | 5331900        |
+| Juliette van Alst | 5402409        |
+|  Vera Vermeulen   | 5127661        |
 
 ## Introduction
 

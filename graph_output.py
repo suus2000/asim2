@@ -3,37 +3,47 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # read CSV as dataframe
-df_non_transposed = pd.read_csv('output/scenario_0.csv')
+def graph_output(file_name):
+    df_non_transposed = pd.read_csv(file_name)
+    # Transpose theDataFrame
+    df = df_non_transposed.transpose()
+    # put the first row as column names
+    df.columns = df.iloc[0]
+    # delete the first row, as they are now the column names
+    df = df[1:]
+    # rename the columns
+    df_new = df.rename(columns={'Index': 'Seed', 'Average Travel Time': 'Average_Travel_Time', 'Average Waiting Time': 'Average_Waiting_Time'})
 
-# Transposeer het DataFrame
-df = df_non_transposed.transpose()
+    print(df_new)
 
-# Zet de eerste rij als kolomnamen
-df.columns = df.iloc[0]
+    x = df_new['Average_Travel_Time'].mean()
+    y = df_new['Average_Waiting_Time'].mean()
+    print('the average travel time is', x, 'The average waiting time is', y)
 
-# Verwijder de eerste rij, omdat deze nu de kolomnamen zijn
-df = df[1:]
+    # Plot Average Travel Time per Seed for scenarios's
+    plt.bar(df_new.index, df_new['Average_Travel_Time'])
+    plt.xlabel('Seeds')
+    plt.ylabel('Average Travel Time')
+    plt.title('Average Travel Time per Seed ')
+    plt.grid(True)
+    plt.show()
 
-# Hernoem de kolommen
-df_new = df.rename(columns={'Index': 'Seed', 'Average Travel Time': 'Average_Travel_Time', 'Average Waiting Time': 'Average_Waiting_Time'})
+    # Plot Average Waiting Time per Seed
+    plt.bar(df_new.index, df_new['Average_Waiting_Time'])
+    plt.xlabel('Seeds')
+    plt.ylabel('Average Waiting Time')
+    plt.title('Average Waiting Time per Seed ')
+    plt.grid(True)
+    plt.show()
 
-# Toon het DataFrame
-print(df_new)
-
-# Plot Average Travel Time per Seed
-plt.bar(df_new.index, df_new['Average_Travel_Time'])
-plt.xlabel('Seeds')
-plt.ylabel('Average Travel Time')
-plt.title('Average Travel Time per Seed')
-plt.grid(True)
-plt.show()
-
-# Plot Average Waiting Time per Seed
-plt.bar(df_new.index, df_new['Average_Waiting_Time'])
-plt.xlabel('Seeds')
-plt.ylabel('Average Waiting Time')
-plt.title('Average Waiting Time per Seed')
-plt.grid(True)
-plt.show()
+graph_output('output/scenario_0.csv')
+graph_output('output/scenario_1.csv')
+graph_output('output/scenario_2.csv')
+graph_output('output/scenario_3.csv')
+graph_output('output/scenario_4.csv')
+graph_output('output/scenario_5.csv')
+graph_output('output/scenario_6.csv')
+graph_output('output/scenario_7.csv')
+graph_output('output/scenario_8.csv')
 
 
