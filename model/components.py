@@ -184,6 +184,13 @@ class Vehicle(Agent):
 
     removed_at_step: int
         the timestamp (number of ticks) that the vehicle is removed
+
+    NEWLY ADDED:
+    waiting_time_agent: int
+        total waiting_time for one agent in the journey
+
+    travel_time: int
+        total travel_time from source to sink
     ...
 
     """
@@ -217,7 +224,6 @@ class Vehicle(Agent):
 
         # Travel time
         self.travel_time = 0
-        #self.reached_end_flag = False
 
     def __str__(self):
         return "Vehicle" + str(self.unique_id) + \
@@ -235,7 +241,7 @@ class Vehicle(Agent):
         """
         Vehicle waits or drives at each step
         """
-        # Report travel time
+        # Increment travel time
         # print('Travel_time increases')
         self.travel_time += 1
 
@@ -282,9 +288,9 @@ class Vehicle(Agent):
             self.arrive_at_next(next_infra, 0)
             self.removed_at_step = self.model.schedule.steps
             self.location.remove(self)
-            # self.reached_end_flag = True
 
-            # Report data
+            # When a vehicle has reached a sink, its data is considered for data collection
+            # which is a more efficient, and more accurate, way to calculate averages
             self.model.total_travel_time.append(self.travel_time)
             self.model.total_waiting_time.append(self.waiting_time_agent)
             self.model.trucks_sink_counter += 1
@@ -317,6 +323,11 @@ class Vehicle(Agent):
         self.location.vehicle_count += 1
 
     def get_delay_time(self, bridge):
+        """
+        Delay time is calculated based on the conditions outlined in the assignment
+        The bridge is passed through as an argument
+        """
+        # If the bridge is flagged, determine the delay_time, otherwise delay_time is 0
         if bridge.broken == True:
             if bridge.length > 200:
                 self.delay_time = random.triangular(60, 240, 120)

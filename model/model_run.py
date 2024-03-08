@@ -10,21 +10,33 @@ output_directory = os.path.join(parent_directory, 'output')
 
 """
     Run simulation
-    Print output at terminal
+    Outputs several CSVs containing data of the runs
 """
 
 # ---------------------------------------------------------------
 # DIY batchrunner
+
+# USER INPUT:
+# scen_list is the scenario list which contains a dictionary per scenario that contains which percentage of bridges
+# with a certain condition should break, can be any length
 scen_list = [{"A":0, "B":0, "C":0, "D":0}, {"A":0, "B":0, "C":0, "D":5},{"A":0, "B":0, "C":0, "D":10},{"A":0, "B":0, "C":5, "D":10},
              {"A":0, "B":0, "C":10, "D":20},{"A":0, "B":5, "C":10, "D":20},{"A":0, "B":10, "C":20, "D":40},{"A":5, "B":10, "C":20, "D":40},
              {"A":10, "B":20, "C":40, "D":80}]
+
+# seed_list is a list of seeds that are used in each scenario agai when running the model
 seed_list = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 def run_model_batch(scen_list, seed_list):
+    """
+    Runs the model for each scenario, for each seed
+    """
+    # Collects the data per scenario, so it can be summarized to a 'final' df
     averages_per_scenario = []
+
     for index, scenario in enumerate(scen_list):
         scen_data = pd.DataFrame()
         print('Scenario:', index)
+        # Multiple runs per scenario for each seed
         for i in seed_list:
             print('Seed:', i)
             seed = i
@@ -33,18 +45,22 @@ def run_model_batch(scen_list, seed_list):
             model = BangladeshModel(seed=seed, scen_dict=scen_dict)
             for j in range(run_length):
                 model.step()
+            # Get data and add it to the dataframe
             run_data = model.get_data(seed)
             scen_data = pd.concat([scen_data, run_data], axis=1)
+        # Output csv file with averages per model run of one scenario to output folder
         filename = 'scenario_{}.csv'.format(index)
         output_file_path = os.path.join(output_directory, filename)
         scen_data.to_csv(output_file_path, index=True)
 
+        # Calculate the averages of one scenario across the different runs
         scenario_averages = []
         scenario_averages.append(index)
         scenario_averages.append(scen_data.loc['Average Travel Time'].mean())
         scenario_averages.append(scen_data.loc['Average Waiting Time'].mean())
         averages_per_scenario.append(scenario_averages)
 
+    # Outputs one CSV with the average per scenario for all scenarios
     df_all_scenarios = pd.DataFrame(averages_per_scenario)
     df_all_scenarios = df_all_scenarios.rename(columns={0: 'Scenario', 1: 'Average Travel Time', 2: 'Average Waiting Time'})
     filename = 'all_scenarios.csv'
