@@ -4,6 +4,8 @@ from mesa.space import ContinuousSpace
 from components import Source, Sink, SourceSink, Bridge, Link, Intersection
 import pandas as pd
 from collections import defaultdict
+import networkx as nx
+import matplotlib.pyplot as plt
 
 
 # ---------------------------------------------------------------
@@ -79,6 +81,10 @@ class BangladeshModel(Model):
         self.sinks = []
         self.bridges = []
 
+        # DF of roads
+        self.road_df = None
+        self.road_list = []
+
         self.total_travel_time = []
         self.trucks_sink_counter = 0
         self.total_waiting_time = []
@@ -86,6 +92,7 @@ class BangladeshModel(Model):
         self.amount_of_bridges = 0
 
         self.generate_model()
+        self.generate_graph()
         # The method break_bridges is called to determine which
         # bridges should break with the scenario dictionary as input
         self.break_bridges(scen_dict)
@@ -98,10 +105,14 @@ class BangladeshModel(Model):
         """
 
         df = pd.read_csv(self.file_name)
+        self.road_df = df
+
 
         # a list of names of roads to be generated
         # TODO You can also read in the road column to generate this list automatically
-        roads = ['R170', 'Z1044', 'N204', 'R240', 'R211', 'R241', 'Z1034', 'Z1402', 'N1', 'R301', 'Z1031', 'Z1048', 'R220', 'R203', 'N105', 'N102', 'N208', 'N104', 'N207', 'Z1005', 'R360', 'R151', 'N2', 'Z1042', 'R141']
+        #roads = ['R170', 'Z1044', 'N204', 'R240', 'R211', 'R241', 'Z1034', 'Z1402', 'N1', 'R301', 'Z1031', 'Z1048', 'R220', 'R203', 'N105', 'N102', 'N208', 'N104', 'N207', 'Z1005', 'R360', 'R151', 'N2', 'Z1042', 'R141']
+        roads = ['N1', 'N2']
+        self.road_list = roads
 
         #build and save networkx grah
         df_objects_all = []
@@ -245,5 +256,36 @@ class BangladeshModel(Model):
         print('waitingtime', self.total_waiting_time)
         print('trucks', self.trucks_sink_counter)
         return df
+
+    def generate_graph(self):
+        G = nx.Graph()
+        df = self.road_df
+        road_list = self.road_list
+        for road in road_list:
+            road_df = df.loc[df['road'] == road]
+            #print(road_df)
+            len_list = []
+            node_list_per_road = []
+            for _, row in road_df.iterrows():
+                #print(row['id'])
+                G.add_node(int(row['id']), pos=(row['lon'], row['lat']))
+                len_list.append(row['length'])
+                node_list_per_road.append(int(row['id']))
+            print('len_list', len_list)
+            print('node list', list(G.nodes))
+            for index, node in enumerate(node_list_per_road):
+                print('\n')
+                print('index',index)
+                print('node',node)
+                print('length node list',len(node_list_per_road))
+                if index < (len(node_list_per_road)-1):
+                    print('next node', node_list_per_road[index + 1])
+                    print('len_list index value', len_list[index])
+                    G.add_weighted_edges_from([(node, node_list_per_road[index + 1],len_list[index])])
+
+        pos = nx.get_node_attributes(G, 'pos')
+        nx.draw(G, pos, with_labels = False, node_color = 'pink', node_size = 5)
+        plt.show()
+
 
 # EOF -----------------------------------------------------------
