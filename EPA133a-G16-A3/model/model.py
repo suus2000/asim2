@@ -67,7 +67,7 @@ class BangladeshModel(Model):
 
     step_time = 1
 
-    file_name = '../data/N1_N2.csv'
+    file_name = '../data/demo-4.csv'
 
     def __init__(self, seed=None, x_max=500, y_max=500, x_min=0, y_min=0, scen_dict = {'A': 0, 'B': 0, 'C': 0, 'D': 0}):
 
@@ -174,8 +174,7 @@ class BangladeshModel(Model):
                     agent = Link(row['id'], self, row['length'], name, row['road'])
                 elif model_type == 'intersection':
                     if not row['id'] in self.schedule._agents:
-                        agent = Intersection(str(row['id'])+'_'+row['road'], self, row['length'], name, row['road'])
-
+                        agent = Intersection(row['id'], self, row['length'], name, row['road'])
                 if agent:
                     self.schedule.add(agent)
                     y = row['lat']
