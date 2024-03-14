@@ -55,6 +55,7 @@ class Bridge(Infra):
         super().__init__(unique_id, model, length, name, road_name)
 
         self.condition = condition
+        self.broken = False
 
         # TODO
         self.delay_time = self.random.randrange(0, 10)
@@ -92,7 +93,7 @@ class Sink(Infra):
     def remove(self, vehicle):
         self.model.schedule.remove(vehicle)
         self.vehicle_removed_toggle = not self.vehicle_removed_toggle
-        print(str(self) + ' REMOVE ' + str(vehicle))
+        #print(str(self) + ' REMOVE ' + str(vehicle))
 
 
 # ---------------------------------------------------------------
@@ -139,7 +140,7 @@ class Source(Infra):
                 Source.truck_counter += 1
                 self.vehicle_count += 1
                 self.vehicle_generated_flag = True
-                print(str(self) + " GENERATE " + str(agent))
+                #print(str(self) + " GENERATE " + str(agent))
         except Exception as e:
             print("Oops!", e.__class__, "occurred.")
 
@@ -192,8 +193,12 @@ class Vehicle(Agent):
 
     removed_at_step: int
         the timestamp (number of ticks) that the vehicle is removed
-    ...
 
+    waiting_time_agent: int
+        total waiting_time for one agent in the journey
+
+    travel_time: int
+        total travel_time from source to sink
     """
 
     # 48 km/h translated into meter per min
@@ -218,8 +223,13 @@ class Vehicle(Agent):
         self.state = Vehicle.State.DRIVE
         self.location_index = 0
         self.waiting_time = 0
+        self.waiting_time_agent = 0
+
         self.waited_at = None
         self.removed_at_step = None
+
+        # Travel time
+        self.travel_time = 0
 
     def __str__(self):
         return "Vehicle" + str(self.unique_id) + \
@@ -237,6 +247,9 @@ class Vehicle(Agent):
         """
         Vehicle waits or drives at each step
         """
+        # Increment travel time
+        self.travel_time += 1
+
         if self.state == Vehicle.State.WAIT:
             self.waiting_time = max(self.waiting_time - 1, 0)
             if self.waiting_time == 0:
@@ -249,7 +262,7 @@ class Vehicle(Agent):
         """
         To print the vehicle trajectory at each step
         """
-        print(self)
+        #print(self)
 
     def drive(self):
 
@@ -277,11 +290,20 @@ class Vehicle(Agent):
         if isinstance(next_infra, Sink):
             # arrive at the sink
             self.arrive_at_next(next_infra, 0)
+
+            # When a vehicle has reached a sink, its data is considered for data collection
+            # which is a more efficient, and more accurate, way to calculate averages
+            self.model.total_travel_time.append(self.travel_time)
+            self.model.total_waiting_time.append(self.waiting_time_agent)
+            self.model.trucks_sink_counter += 1
+
             self.removed_at_step = self.model.schedule.steps
             self.location.remove(self)
             return
+
         elif isinstance(next_infra, Bridge):
-            self.waiting_time = next_infra.get_delay_time()
+            self.waiting_time = self.get_delay_time(next_infra)
+            self.waiting_time_agent += self.waiting_time
             if self.waiting_time > 0:
                 # arrive at the bridge and wait
                 self.arrive_at_next(next_infra, 0)
@@ -305,4 +327,24 @@ class Vehicle(Agent):
         self.location_offset = location_offset
         self.location.vehicle_count += 1
 
+    def get_delay_time(self, bridge):
+        """
+        Delay time is calculated based on the conditions outlined in the assignment
+        The bridge is passed through as an argument
+        """
+        # If the bridge is flagged, determine the delay_time, otherwise delay_time is 0
+        if bridge.broken == True:
+            if bridge.length > 200:
+                self.delay_time = self.random.triangular(60, 240, 120)
+            elif bridge.length > 50 and bridge.length <= 200:
+                self.delay_time = self.random.uniform(45, 90)
+            elif bridge.length > 10 and bridge.length <= 50:
+                self.delay_time = self.random.uniform(15, 60)
+            else:
+                self.delay_time = self.random.uniform(10, 20)
+
+        else:
+            self.delay_time = 0
+
+        return self.delay_time
 # EOF -----------------------------------------------------------

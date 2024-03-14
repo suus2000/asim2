@@ -51,13 +51,24 @@ class BangladeshModel(Model):
     sinks: list
         all sinks in the network
 
+    bridges: list
+        all bridges in the network
+
+    total_travel_time: list
+        the travel time of each agent that has reached the end of the road
+
+    truck_sink_counter: int
+        the number of trucks that reach the end of the road
+
+    total_waiting_time:
+        the total waiting time of each agent that has reached the end of the road
     """
 
     step_time = 1
 
     file_name = '../data/demo-4.csv'
 
-    def __init__(self, seed=None, x_max=500, y_max=500, x_min=0, y_min=0):
+    def __init__(self, seed=None, x_max=500, y_max=500, x_min=0, y_min=0, scen_dict = {'A': 0, 'B': 0, 'C': 0, 'D': 0}):
 
         self.schedule = BaseScheduler(self)
         self.running = True
@@ -65,8 +76,18 @@ class BangladeshModel(Model):
         self.space = None
         self.sources = []
         self.sinks = []
+        self.bridges = []
+
+        self.total_travel_time = []
+        self.trucks_sink_counter = 0
+        self.total_waiting_time = []
+
+        self.amount_of_bridges = 0
 
         self.generate_model()
+        # The method break_bridges is called to determine which
+        # bridges should break with the scenario dictionary as input
+        self.break_bridges(scen_dict)
 
     def generate_model(self):
         """
@@ -143,7 +164,9 @@ class BangladeshModel(Model):
                     self.sources.append(agent.unique_id)
                     self.sinks.append(agent.unique_id)
                 elif model_type == 'bridge':
+                    # To check whether a bridge should break, its condition is needed
                     agent = Bridge(row['id'], self, row['length'], name, row['road'], row['condition'])
+                    self.bridges.append(agent)
                 elif model_type == 'link':
                     agent = Link(row['id'], self, row['length'], name, row['road'])
                 elif model_type == 'intersection':
@@ -178,10 +201,47 @@ class BangladeshModel(Model):
         """
         return self.path_ids_dict[source, None]
 
+
     def step(self):
         """
         Advance the simulation by one step.
         """
         self.schedule.step()
+
+    def break_bridges(self, scenario_dict):
+        """
+        Determines which bridge should break and flags them
+        """
+        # Checks what bridges have a certain key (A,B,C,D) and adds them to a list
+        for key in scenario_dict:
+            bridges_condition_list = []
+            for bridge in self.bridges:
+                if bridge.condition == key:
+                    bridges_condition_list.append(bridge)
+
+            # Determines what amount of bridges of a certain condition should be broken with the scenario dictionary,
+            # then makes random choices and flags them
+            amount_bridges = len(bridges_condition_list)
+            amount_bridges_to_break = int((scenario_dict[key] / 100) * amount_bridges)
+            for i in range(amount_bridges_to_break):
+                bridge_to_break = self.random.choice(bridges_condition_list)
+                bridge_to_break.broken = True
+                bridges_condition_list.remove(bridge_to_break)
+
+    def get_data(self):
+        """
+        Own data collector, more efficient as it generates data at end of model
+        """
+        data_dict = {}
+        # Seed is being used as column name
+        seed = str(self._seed)
+        # Average travel time and average waiting time are being reported per run in one df per scenario
+        data_dict['Average Travel Time'] = sum(self.total_travel_time) / self.trucks_sink_counter
+        data_dict['Average Waiting Time'] = sum(self.total_waiting_time) / self.trucks_sink_counter
+        df = pd.DataFrame.from_dict(data_dict, orient='index', columns=[seed])
+        print('traveltime', self.total_travel_time)
+        print('waitingtime', self.total_waiting_time)
+        print('trucks', self.trucks_sink_counter)
+        return df
 
 # EOF -----------------------------------------------------------
