@@ -69,7 +69,7 @@ class BangladeshModel(Model):
 
     step_time = 1
 
-    file_name = '../data/N1_N2_v1.csv'
+    file_name = '../data/N1_test.csv'
 
     def __init__(self, seed=None, x_max=500, y_max=500, x_min=0, y_min=0, scen_dict = {'A': 0, 'B': 0, 'C': 0, 'D': 0}):
 
@@ -110,8 +110,8 @@ class BangladeshModel(Model):
 
         # a list of names of roads to be generated
         # TODO You can also read in the road column to generate this list automatically
-        roads = ['R170', 'Z1044', 'N204', 'R240', 'R211', 'R241', 'Z1034', 'Z1402', 'N1', 'R301', 'Z1031', 'Z1048', 'R220', 'R203', 'N105', 'N102', 'N208', 'N104', 'N207', 'Z1005', 'R360', 'R151', 'N2', 'Z1042', 'R141']
-        #roads = ['N1', 'N2']
+        #roads = ['R170', 'Z1044', 'N204', 'R240', 'R211', 'R241', 'Z1034', 'Z1402', 'N1', 'R301', 'Z1031', 'Z1048', 'R220', 'R203', 'N105', 'N102', 'N208', 'N104', 'N207', 'Z1005', 'R360', 'R151', 'N2', 'Z1042', 'R141']
+        roads = ['N1']
         self.road_list = roads
 
         #build and save networkx grah
@@ -221,25 +221,37 @@ class BangladeshModel(Model):
         """
         self.schedule.step()
 
+    # def break_bridges(self, scenario_dict):
+    #     """
+    #     Determines which bridge should break and flags them
+    #     """
+    #     # Checks what bridges have a certain key (A,B,C,D) and adds them to a list
+    #     for key in scenario_dict:
+    #         bridges_condition_list = []
+    #         for bridge in self.bridges:
+    #             if bridge.condition == key:
+    #                 bridges_condition_list.append(bridge)
+    #
+    #         # Determines what amount of bridges of a certain condition should be broken with the scenario dictionary,
+    #         # then makes random choices and flags them
+    #         amount_bridges = len(bridges_condition_list)
+    #         amount_bridges_to_break = int((scenario_dict[key] / 100) * amount_bridges)
+    #         for i in range(amount_bridges_to_break):
+    #             bridge_to_break = self.random.choice(bridges_condition_list)
+    #             bridge_to_break.broken = True
+    #             bridges_condition_list.remove(bridge_to_break)
+
+
     def break_bridges(self, scenario_dict):
         """
-        Determines which bridge should break and flags them
+        Determines which bridge should break and flags them based on random chance
         """
-        # Checks what bridges have a certain key (A,B,C,D) and adds them to a list
-        for key in scenario_dict:
-            bridges_condition_list = []
-            for bridge in self.bridges:
-                if bridge.condition == key:
-                    bridges_condition_list.append(bridge)
+        for bridge in self.bridges:
+            random_number = self.random.randint(0, 100)  # Generates a random number between 0 and 100
 
-            # Determines what amount of bridges of a certain condition should be broken with the scenario dictionary,
-            # then makes random choices and flags them
-            amount_bridges = len(bridges_condition_list)
-            amount_bridges_to_break = int((scenario_dict[key] / 100) * amount_bridges)
-            for i in range(amount_bridges_to_break):
-                bridge_to_break = self.random.choice(bridges_condition_list)
-                bridge_to_break.broken = True
-                bridges_condition_list.remove(bridge_to_break)
+            for key, value in scenario_dict.items():
+                if bridge.condition == key and random_number < value:
+                    bridge.broken = True
 
     def get_data(self):
         """
