@@ -284,6 +284,8 @@ class Vehicle(Agent):
         """
 
         self.location_index += 1
+        #print(self.location_index)
+        #print(self)
         next_id = self.path_ids[self.location_index]
         next_infra = self.model.schedule._agents[next_id]  # Access to protected member _agents
 
