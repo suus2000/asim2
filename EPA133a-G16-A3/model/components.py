@@ -61,9 +61,33 @@ class Bridge(Infra):
         self.delay_time = self.random.randrange(0, 10)
         # print(self.delay_time)
 
-    # TODO
+    # # TODO
+    # def get_delay_time(self):
+    #     return self.delay_time
+
     def get_delay_time(self):
-        return self.delay_time
+
+
+        """
+        Delay time is calculated based on the conditions outlined in the assignment
+        The bridge is passed through as an argument
+        """
+        # If the bridge is flagged, determine the delay_time, otherwise delay_time is 0
+        if self.broken == True:
+            if self.length > 200:
+                delay_time = self.random.triangular(60, 240, 120)
+            elif self.length > 50 and self.length <= 200:
+                delay_time = self.random.uniform(45, 90)
+            elif self.length > 10 and self.length <= 50:
+                delay_time = self.random.uniform(15, 60)
+            else:
+                delay_time = self.random.uniform(10, 20)
+
+        else:
+            delay_time = 0
+
+        return delay_time
+# EOF -----------------------------------------------------------
 
 
 # ---------------------------------------------------------------
@@ -304,7 +328,7 @@ class Vehicle(Agent):
             return
 
         elif isinstance(next_infra, Bridge):
-            self.waiting_time = self.get_delay_time(next_infra)
+            self.waiting_time = Bridge.get_delay_time(next_infra)
             self.waiting_time_agent += self.waiting_time
             if self.waiting_time > 0:
                 # arrive at the bridge and wait
@@ -329,24 +353,24 @@ class Vehicle(Agent):
         self.location_offset = location_offset
         self.location.vehicle_count += 1
 
-    def get_delay_time(self, bridge):
-        """
-        Delay time is calculated based on the conditions outlined in the assignment
-        The bridge is passed through as an argument
-        """
-        # If the bridge is flagged, determine the delay_time, otherwise delay_time is 0
-        if bridge.broken == True:
-            if bridge.length > 200:
-                self.delay_time = self.random.triangular(60, 240, 120)
-            elif bridge.length > 50 and bridge.length <= 200:
-                self.delay_time = self.random.uniform(45, 90)
-            elif bridge.length > 10 and bridge.length <= 50:
-                self.delay_time = self.random.uniform(15, 60)
-            else:
-                self.delay_time = self.random.uniform(10, 20)
-
-        else:
-            self.delay_time = 0
-
-        return self.delay_time
-# EOF -----------------------------------------------------------
+#     def get_delay_time(self, bridge):
+#         """
+#         Delay time is calculated based on the conditions outlined in the assignment
+#         The bridge is passed through as an argument
+#         """
+#         # If the bridge is flagged, determine the delay_time, otherwise delay_time is 0
+#         if bridge.broken == True:
+#             if bridge.length > 200:
+#                 self.delay_time = self.random.triangular(60, 240, 120)
+#             elif bridge.length > 50 and bridge.length <= 200:
+#                 self.delay_time = self.random.uniform(45, 90)
+#             elif bridge.length > 10 and bridge.length <= 50:
+#                 self.delay_time = self.random.uniform(15, 60)
+#             else:
+#                 self.delay_time = self.random.uniform(10, 20)
+#
+#         else:
+#             self.delay_time = 0
+#
+#         return self.delay_time
+# # EOF -----------------------------------------------------------
