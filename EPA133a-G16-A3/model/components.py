@@ -266,6 +266,7 @@ class Vehicle(Agent):
         Set the origin destination path of the vehicle
         """
         self.path_ids = self.model.get_route(self.generated_by.unique_id)
+        #print("path_ids", self.path_ids)
 
     def step(self):
         """
@@ -311,6 +312,7 @@ class Vehicle(Agent):
         #print(self.location_index)
         #print(self)
         next_id = self.path_ids[self.location_index]
+        next_infra = self.model.schedule._agents[next_id]  # Access to protected member _agents
         next_infra = self.model.schedule._agents[next_id]  # Access to protected member _agents
 
         if isinstance(next_infra, Sink):

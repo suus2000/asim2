@@ -1,3 +1,5 @@
+import traceback
+
 from mesa import Model
 from mesa.time import BaseScheduler
 from mesa.space import ContinuousSpace
@@ -6,6 +8,7 @@ import pandas as pd
 from collections import defaultdict
 import networkx as nx
 import matplotlib.pyplot as plt
+
 
 
 # ---------------------------------------------------------------
@@ -69,9 +72,9 @@ class BangladeshModel(Model):
 
     step_time = 1
 
-    file_name = '../data/N1_test.csv'
+    file_name = '../data/demo-4.csv'
 
-    def __init__(self, seed=None, x_max=500, y_max=500, x_min=0, y_min=0, scen_dict = {'A': 0, 'B': 0, 'C': 0, 'D': 0}):
+    def __init__(self, seed=None,   x_max=500, y_max=500, x_min=0, y_min=0, scen_dict = {'A': 0, 'B': 0, 'C': 0, 'D': 0}):
 
         self.schedule = BaseScheduler(self)
         self.running = True
@@ -92,10 +95,12 @@ class BangladeshModel(Model):
         self.amount_of_bridges = 0
 
         self.generate_model()
-        self.generate_graph()
+
+        self.graph = self.generate_graph()
         # The method break_bridges is called to determine which
         # bridges should break with the scenario dictionary as input
         self.break_bridges(scen_dict)
+        #print(self.path_ids_dict)
 
     def generate_model(self):
         """
@@ -111,7 +116,7 @@ class BangladeshModel(Model):
         # a list of names of roads to be generated
         # TODO You can also read in the road column to generate this list automatically
         #roads = ['R170', 'Z1044', 'N204', 'R240', 'R211', 'R241', 'Z1034', 'Z1402', 'N1', 'R301', 'Z1031', 'Z1048', 'R220', 'R203', 'N105', 'N102', 'N208', 'N104', 'N207', 'Z1005', 'R360', 'R151', 'N2', 'Z1042', 'R141']
-        roads = ['N1']
+        roads = ['N1', 'N2']
         self.road_list = roads
 
         #build and save networkx grah
@@ -202,11 +207,26 @@ class BangladeshModel(Model):
             sink = self.random.choice(self.sinks)
             if sink is not source:
                 break
+        if (source, sink) not in self.path_ids_dict.keys():
+            print("we gaan van ", source, "naar ", sink)
+            try:
+                shortest_path = nx.shortest_path(self.graph, source=source, target=sink)
+                route = pd.Series(shortest_path)
+                self.path_ids_dict[(source, sink)] = route
+                print("the path is", self.path_ids_dict[source, sink])
+            except nx.NetworkXNoPath:
+                traceback.print_exc()
+                print("No path found")
+        else:
+            #print("leuk")
+            return self.path_ids_dict[source, sink]
+
         return self.path_ids_dict[source, sink]
 
     # TODO
     def get_route(self, source):
-        return self.get_straight_route(source)
+
+        return self.get_random_route(source)
 
     def get_straight_route(self, source):
         """
@@ -221,37 +241,25 @@ class BangladeshModel(Model):
         """
         self.schedule.step()
 
-    # def break_bridges(self, scenario_dict):
-    #     """
-    #     Determines which bridge should break and flags them
-    #     """
-    #     # Checks what bridges have a certain key (A,B,C,D) and adds them to a list
-    #     for key in scenario_dict:
-    #         bridges_condition_list = []
-    #         for bridge in self.bridges:
-    #             if bridge.condition == key:
-    #                 bridges_condition_list.append(bridge)
-    #
-    #         # Determines what amount of bridges of a certain condition should be broken with the scenario dictionary,
-    #         # then makes random choices and flags them
-    #         amount_bridges = len(bridges_condition_list)
-    #         amount_bridges_to_break = int((scenario_dict[key] / 100) * amount_bridges)
-    #         for i in range(amount_bridges_to_break):
-    #             bridge_to_break = self.random.choice(bridges_condition_list)
-    #             bridge_to_break.broken = True
-    #             bridges_condition_list.remove(bridge_to_break)
-
-
     def break_bridges(self, scenario_dict):
         """
-        Determines which bridge should break and flags them based on random chance
+        Determines which bridge should break and flags them
         """
-        for bridge in self.bridges:
-            random_number = self.random.randint(0, 100)  # Generates a random number between 0 and 100
+        # Checks what bridges have a certain key (A,B,C,D) and adds them to a list
+        for key in scenario_dict:
+            bridges_condition_list = []
+            for bridge in self.bridges:
+                if bridge.condition == key:
+                    bridges_condition_list.append(bridge)
 
-            for key, value in scenario_dict.items():
-                if bridge.condition == key and random_number < value:
-                    bridge.broken = True
+            # Determines what amount of bridges of a certain condition should be broken with the scenario dictionary,
+            # then makes random choices and flags them
+            amount_bridges = len(bridges_condition_list)
+            amount_bridges_to_break = int((scenario_dict[key] / 100) * amount_bridges)
+            for i in range(amount_bridges_to_break):
+                bridge_to_break = self.random.choice(bridges_condition_list)
+                bridge_to_break.broken = True
+                bridges_condition_list.remove(bridge_to_break)
 
     def get_data(self):
         """
@@ -283,21 +291,24 @@ class BangladeshModel(Model):
                 G.add_node(int(row['id']), pos=(row['lon'], row['lat']))
                 len_list.append(row['length'])
                 node_list_per_road.append(int(row['id']))
-            print('len_list', len_list)
-            print('node list', list(G.nodes))
+            #print('len_list', len_list)
+            #print('node list', list(G.nodes))
             for index, node in enumerate(node_list_per_road):
-                print('\n')
-                print('index',index)
-                print('node',node)
-                print('length node list',len(node_list_per_road))
+                #print('\n')
+                #print('index',index)
+                #print('node',node)
+                #print('length node list',len(node_list_per_road))
                 if index < (len(node_list_per_road)-1):
-                    print('next node', node_list_per_road[index + 1])
-                    print('len_list index value', len_list[index])
+                    #print('next node', node_list_per_road[index + 1])
+                    #print('len_list index value', len_list[index])
                     G.add_weighted_edges_from([(node, node_list_per_road[index + 1],len_list[index])])
-
         pos = nx.get_node_attributes(G, 'pos')
-        nx.draw(G, pos, with_labels = False, node_color = 'pink', node_size = 5)
+        nx.draw(G, pos, with_labels=False, node_color='pink', node_size=5)
         plt.show()
+        print("de graaf is", G)
+        return G
+
+
 
 
 # EOF -----------------------------------------------------------
