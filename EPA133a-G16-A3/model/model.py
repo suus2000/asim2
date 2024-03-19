@@ -72,7 +72,7 @@ class BangladeshModel(Model):
 
     step_time = 1
 
-    file_name = '../data/demo-4.csv'
+    file_name = '../data/N1_N2_v3.csv'
 
     def __init__(self, seed=None,   x_max=500, y_max=500, x_min=0, y_min=0, scen_dict = {'A': 0, 'B': 0, 'C': 0, 'D': 0}):
 
@@ -115,8 +115,8 @@ class BangladeshModel(Model):
 
         # a list of names of roads to be generated
         # TODO You can also read in the road column to generate this list automatically
-        #roads = ['R170', 'Z1044', 'N204', 'R240', 'R211', 'R241', 'Z1034', 'Z1402', 'N1', 'R301', 'Z1031', 'Z1048', 'R220', 'R203', 'N105', 'N102', 'N208', 'N104', 'N207', 'Z1005', 'R360', 'R151', 'N2', 'Z1042', 'R141']
-        roads = ['N1', 'N2']
+        roads = ['R170', 'Z1044', 'N204', 'R240', 'R211', 'R241', 'Z1034', 'Z1402', 'N1', 'R301', 'Z1031', 'Z1048', 'R220', 'R203', 'N105', 'N102', 'N208', 'N104', 'N207', 'Z1005', 'R360', 'R151', 'N2', 'Z1042', 'R141']
+        #roads = ['N1', 'N2']
         self.road_list = roads
 
         #build and save networkx grah

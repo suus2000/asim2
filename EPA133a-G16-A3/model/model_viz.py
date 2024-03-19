@@ -43,11 +43,16 @@ def agent_portrayal(agent):
     elif isinstance(agent, Link):
         portrayal["Color"] = "Tan"
 
+
     elif isinstance(agent, Intersection):
-        portrayal["Color"] = "DeepPink"
+        #portrayal["Color"] = "DeepPink"
+        portrayal["Color"] = "orange"
+        portrayal["Layer"] = 1
+        portrayal["r"] = 2
 
     elif isinstance(agent, Bridge):
         portrayal["Color"] = "dodgerblue"
+
 
     if isinstance(agent, (Source, Sink)):
         portrayal["r"] = 5
