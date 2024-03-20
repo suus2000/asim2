@@ -19,10 +19,10 @@ output_directory = os.path.join(parent_directory, 'output')
 # USER INPUT:
 # scen_list is the scenario list which contains a dictionary per scenario that contains which percentage of bridges
 # with a certain condition should break, can be any length
-scen_list = [{"A":100, "B":100, "C":100, "D":100}]
+scen_list = [{"A":0, "B":0, "C":0, "D":0},{'A':0,'B':0,'C':0,'D':5},{'A':0,'B':0,'C':5,'D':10},{'A':0,'B':5,'C':10,'D':20}, {'A':5,'B':10,'C':20,'D':40}]
 
 # seed_list is a list of seeds that are used in each scenario agai when running the model
-seed_list = [0, 1, 2]
+seed_list = [0, 1, 2,3,4,5,6,7,8,9]
 
 def run_model_batch(scen_list, seed_list):
     """
