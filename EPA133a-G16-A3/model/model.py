@@ -96,6 +96,8 @@ class BangladeshModel(Model):
 
         self.generate_model()
 
+        # Generate a graph and set the graph as attribute to the model.
+        # Therefore, it is possible to use the graph during other functions
         self.graph = self.generate_graph()
         # The method break_bridges is called to determine which
         # bridges should break with the scenario dictionary as input
@@ -115,8 +117,7 @@ class BangladeshModel(Model):
 
         # a list of names of roads to be generated
         # TODO You can also read in the road column to generate this list automatically
-        #roads = ['R170', 'Z1044', 'N204', 'R240', 'R211', 'R241', 'Z1034', 'Z1402', 'N1', 'R301', 'Z1031', 'Z1048', 'R220', 'R203', 'N105', 'N102', 'N208', 'N104', 'N207', 'Z1005', 'R360', 'R151', 'N2', 'Z1042', 'R141']
-        #roads = ['N1', 'N2']
+        # Create a list of the roads we have used
         roads = ['R170', 'Z1044', 'N204', 'R240', 'R211', 'Z1034', 'N1', 'R301', 'Z1031', 'Z1048', 'N105', 'N102', 'N208', 'N104', 'N207', 'R360', 'R151', 'N2', 'Z1042', 'R141']
         self.road_list = roads
 
@@ -130,21 +131,8 @@ class BangladeshModel(Model):
             if not df_objects_on_road.empty:
                 df_objects_all.append(df_objects_on_road)
 
-                """
-                Set the path 
-                1. get the serie of object IDs on a given road in the cvs in the original order
-                2. add the (straight) path to the path_ids_dict
-                3. put the path in reversed order and reindex
-                4. add the path to the path_ids_dict so that the vehicles can drive backwards too
-                """
-                path_ids = df_objects_on_road['id']
-                path_ids.reset_index(inplace=True, drop=True)
-                self.path_ids_dict[path_ids[0], path_ids.iloc[-1]] = path_ids
-                self.path_ids_dict[path_ids[0], None] = path_ids
-                path_ids = path_ids[::-1]
-                path_ids.reset_index(inplace=True, drop=True)
-                self.path_ids_dict[path_ids[0], path_ids.iloc[-1]] = path_ids
-                self.path_ids_dict[path_ids[0], None] = path_ids
+                # It has been decided to not set the path_dictionary the original way anymore,
+                # Networkx shortest path is used. This is done in the get_random_route function
 
         # put back to df with selected roads so that min and max and be easily calculated
         df = pd.concat(df_objects_all)
@@ -208,25 +196,30 @@ class BangladeshModel(Model):
             sink = self.random.choice(self.sinks)
             if sink is not source:
                 break
+        # Check if there is a path already in the dictionary
         if (source, sink) not in self.path_ids_dict.keys():
-            print("we gaan van ", source, "naar ", sink)
+            #print("We go from ", source, "to ", sink)
+            # Try to create the shortest path from source to sink, using networkx
             try:
                 shortest_path = nx.shortest_path(self.graph, source=source, target=sink)
                 route = pd.Series(shortest_path)
+                # Add the new route to the path dictionary
                 self.path_ids_dict[(source, sink)] = route
-                print("the path is", self.path_ids_dict[source, sink])
+                #print("the path is", self.path_ids_dict[source, sink])
             except nx.NetworkXNoPath:
+                # If it was not possible to create the path, give an error
                 traceback.print_exc()
                 print("No path found")
+        # If the path is already in the dictionary, return the correct path
         else:
-            #print("leuk")
+            #print("path already generated")
             return self.path_ids_dict[source, sink]
 
         return self.path_ids_dict[source, sink]
 
     # TODO
     def get_route(self, source):
-
+        # Get the random route, not the straight one
         return self.get_random_route(source)
 
     def get_straight_route(self, source):
@@ -282,18 +275,23 @@ class BangladeshModel(Model):
         G = nx.Graph()
         df = self.road_df
         road_list = self.road_list
+        # Create the graph per road
         for road in road_list:
             road_df = df.loc[df['road'] == road]
             #print(road_df)
             len_list = []
             node_list_per_road = []
+            # Per ID, a node is added based on longitude and latitude.
             for _, row in road_df.iterrows():
                 #print(row['id'])
                 G.add_node(int(row['id']), pos=(row['lon'], row['lat']))
+                # The length of the node to the next node is saved, to use for the edges
                 len_list.append(row['length'])
                 node_list_per_road.append(int(row['id']))
             #print('len_list', len_list)
             #print('node list', list(G.nodes))
+            # For each node we created (except the last one), we create an edge to the next node
+            # The weight of the edge is the length
             for index, node in enumerate(node_list_per_road):
                 #print('\n')
                 #print('index',index)
