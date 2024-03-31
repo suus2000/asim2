@@ -4,12 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="119edc50-6bb2-40c3-805c-11c4289ad2ee" name="Changes" comment="Added comments">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15-3-2024_12_49_[Changes]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15-3-2024_12_49__Changes_.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_19-3-2024_18_02__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_19-3-2024_18_02__Changes_.xml" afterDir="false" />
+    <list default="true" id="119edc50-6bb2-40c3-805c-11c4289ad2ee" name="Changes" comment="Added the pip install lxml, need to run this the first time">
+      <change afterPath="$PROJECT_DIR$/Assignment_4_group_16/Dataset assignment 4.ipynb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assignment_4_group_16/UPDATED_BMMS_overview.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assignment_4_group_16/_roads3.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assignment_4_group_16/output_all_datasets_2.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_19-3-2024_18_02_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_19-3-2024_18_02__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_19_03_2024_17_41_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_19_03_2024_17_41__Changes_.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assignment_4_group_16/DATASET_VERSIE2_ASSIGNMENT4.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Assignment_4_group_16/DATASET_VERSIE2_ASSIGNMENT4.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,7 +94,11 @@
       <updated>1709119557987</updated>
       <workItem from="1711111772947" duration="274000" />
       <workItem from="1711388389893" duration="355000" />
-      <workItem from="1711397043206" duration="178000" />
+      <workItem from="1711397043206" duration="689000" />
+      <workItem from="1711458259568" duration="377000" />
+      <workItem from="1711531819986" duration="5014000" />
+      <workItem from="1711786806093" duration="14958000" />
+      <workItem from="1711871722322" duration="1842000" />
     </task>
     <task id="LOCAL-00001" summary="Add my name">
       <option name="closed" value="true" />
@@ -139,7 +148,31 @@
       <option name="project" value="LOCAL" />
       <updated>1710884494880</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Started cleaning the dataset for assignment 4">
+      <option name="closed" value="true" />
+      <created>1711397289752</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1711397289752</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Fixed duplicate in the first row of the dataset">
+      <option name="closed" value="true" />
+      <created>1711397694646</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1711397694646</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Added the pip install lxml, need to run this the first time">
+      <option name="closed" value="true" />
+      <created>1711458459806</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1711458459806</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -160,7 +193,10 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Add my name" />
     <MESSAGE value="Toevoegen random nummer op basis van een getal tussen de nul en honderd dat bepaald of de brug breekt en veranderen van de get_delay_time van de vehicles naar de bruggen." />
-    <option name="LAST_COMMIT_MESSAGE" value="Toevoegen random nummer op basis van een getal tussen de nul en honderd dat bepaald of de brug breekt en veranderen van de get_delay_time van de vehicles naar de bruggen." />
+    <MESSAGE value="Started cleaning the dataset for assignment 4" />
+    <MESSAGE value="Fixed duplicate in the first row of the dataset" />
+    <MESSAGE value="Added the pip install lxml, need to run this the first time" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added the pip install lxml, need to run this the first time" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -169,6 +205,11 @@
           <url>file://$PROJECT_DIR$/EPA133a-G16-A3/graphs.py</url>
           <line>1</line>
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="jupyter-line">
+          <url>notebook://C:/Users/sjuul/PycharmProjects/asim2/Assignment_4_group_16/Dataset assignment 4.ipynb</url>
+          <line>111</line>
+          <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
