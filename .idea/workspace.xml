@@ -4,17 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="119edc50-6bb2-40c3-805c-11c4289ad2ee" name="Changes" comment="Added the pip install lxml, need to run this the first time">
-      <change afterPath="$PROJECT_DIR$/Assignment_4_group_16/Dataset assignment 4.ipynb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assignment_4_group_16/UPDATED_BMMS_overview.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assignment_4_group_16/_roads3.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assignment_4_group_16/output_all_datasets_2.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_19-3-2024_18_02_[Changes]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_19-3-2024_18_02__Changes_.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_19_03_2024_17_41_[Changes]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_19_03_2024_17_41__Changes_.xml" beforeDir="false" />
+    <list default="true" id="119edc50-6bb2-40c3-805c-11c4289ad2ee" name="Changes" comment="Added the deepnote code in the jupyter notebook, and comments and markdown cells">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assignment_4_group_16/DATASET_VERSIE2_ASSIGNMENT4.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Assignment_4_group_16/DATASET_VERSIE2_ASSIGNMENT4.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assignment_4_group_16/Dataset assignment 4.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Assignment_4_group_16/Dataset assignment 4.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -98,7 +90,8 @@
       <workItem from="1711458259568" duration="377000" />
       <workItem from="1711531819986" duration="5014000" />
       <workItem from="1711786806093" duration="14958000" />
-      <workItem from="1711871722322" duration="1842000" />
+      <workItem from="1711871722322" duration="2498000" />
+      <workItem from="1712048849534" duration="3694000" />
     </task>
     <task id="LOCAL-00001" summary="Add my name">
       <option name="closed" value="true" />
@@ -172,7 +165,15 @@
       <option name="project" value="LOCAL" />
       <updated>1711458459806</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Added the deepnote code in the jupyter notebook, and comments and markdown cells">
+      <option name="closed" value="true" />
+      <created>1711873975800</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1711873975800</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -196,7 +197,8 @@
     <MESSAGE value="Started cleaning the dataset for assignment 4" />
     <MESSAGE value="Fixed duplicate in the first row of the dataset" />
     <MESSAGE value="Added the pip install lxml, need to run this the first time" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added the pip install lxml, need to run this the first time" />
+    <MESSAGE value="Added the deepnote code in the jupyter notebook, and comments and markdown cells" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added the deepnote code in the jupyter notebook, and comments and markdown cells" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -208,7 +210,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="jupyter-line">
           <url>notebook://C:/Users/sjuul/PycharmProjects/asim2/Assignment_4_group_16/Dataset assignment 4.ipynb</url>
-          <line>111</line>
+          <line>100</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
